@@ -4,13 +4,30 @@ import { ENDPOINTS } from '../constants';
 // This service simulates interaction with a Cloudflare Worker backend.
 // In a real application, these fetch calls would hit your Worker's routes.
 
+// Helper to parse error responses
+async function parseErrorResponse(response: Response): Promise<string> {
+  const contentType = response.headers.get('content-type');
+  let errorBody: any;
+  if (contentType && contentType.includes('application/json')) {
+    try {
+      errorBody = await response.json();
+    } catch (e) {
+      // Fallback if JSON parsing fails despite header
+      errorBody = await response.text();
+    }
+  } else {
+    errorBody = await response.text();
+  }
+  return typeof errorBody === 'string' ? errorBody : (errorBody.error || `Unknown error (${response.status})`);
+}
+
 export const flashcardService = {
   async getFlashcards(): Promise<ApiResponse<Flashcard[]>> {
     try {
       const response = await fetch(ENDPOINTS.FLASHCARDS);
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to fetch flashcards: ${response.status} ${errorText}`);
+        const errorMessage = await parseErrorResponse(response);
+        throw new Error(`Failed to fetch flashcards: ${response.status} ${errorMessage}`);
       }
       const data: Flashcard[] = await response.json();
       return { success: true, data };
@@ -23,25 +40,21 @@ export const flashcardService = {
 
   async addFlashcard(flashcard: Omit<Flashcard, 'id' | 'createdAt' | 'dueDate' | 'interval'>): Promise<ApiResponse<Flashcard>> {
     try {
-      const newFlashcard: Flashcard = {
-        ...flashcard,
-        id: crypto.randomUUID(), // Client-side ID for simulation
-        createdAt: Date.now(),
-        dueDate: Date.now(), // Due immediately upon creation
-        interval: 0,
-      };
+      // Client-side ID generation is now primarily for initial UI state/type conformity,
+      // the worker will generate the canonical ID, createdAt, dueDate, interval.
+      // We pass the raw data and let the worker handle metadata.
       const response = await fetch(ENDPOINTS.FLASHCARDS, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newFlashcard),
+        body: JSON.stringify(flashcard), // Send only the data the user provides
       });
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to add flashcard: ${response.status} ${errorText}`);
+        const errorMessage = await parseErrorResponse(response);
+        throw new Error(`Failed to add flashcard: ${response.status} ${errorMessage}`);
       }
-      // Assuming the worker returns the created flashcard
+      // Assuming the worker returns the created flashcard with its ID and metadata
       const data: Flashcard = await response.json();
       return { success: true, data };
     } catch (error: unknown) {
@@ -61,8 +74,8 @@ export const flashcardService = {
         body: JSON.stringify(flashcard),
       });
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to update flashcard: ${response.status} ${errorText}`);
+        const errorMessage = await parseErrorResponse(response);
+        throw new Error(`Failed to update flashcard: ${response.status} ${errorMessage}`);
       }
       const data: Flashcard = await response.json();
       return { success: true, data };
@@ -79,8 +92,8 @@ export const flashcardService = {
         method: 'DELETE',
       });
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to delete flashcard: ${response.status} ${errorText}`);
+        const errorMessage = await parseErrorResponse(response);
+        throw new Error(`Failed to delete flashcard: ${response.status} ${errorMessage}`);
       }
       return { success: true };
     } catch (error: unknown) {

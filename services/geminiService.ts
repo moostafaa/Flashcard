@@ -43,8 +43,14 @@ export const geminiService = {
         body: JSON.stringify({ word }),
       });
       if (!response.ok) {
-        const errorBody = await response.json();
-        throw new Error(errorBody.error || `Failed to generate definition: ${response.status}`);
+        const contentType = response.headers.get('content-type');
+        let errorBody: any;
+        if (contentType && contentType.includes('application/json')) {
+          errorBody = await response.json();
+        } else {
+          errorBody = await response.text();
+        }
+        throw new Error(errorBody.error || errorBody || `Failed to generate definition: ${response.status}`);
       }
       const data: GeminiDefinitionResponse = await response.json();
       return { success: true, data };
@@ -65,8 +71,14 @@ export const geminiService = {
         body: JSON.stringify({ count, theme }),
       });
       if (!response.ok) {
-        const errorBody = await response.json();
-        throw new Error(errorBody.error || `Failed to fetch word suggestions: ${response.status}`);
+        const contentType = response.headers.get('content-type');
+        let errorBody: any;
+        if (contentType && contentType.includes('application/json')) {
+          errorBody = await response.json();
+        } else {
+          errorBody = await response.text();
+        }
+        throw new Error(errorBody.error || errorBody || `Failed to fetch word suggestions: ${response.status}`);
       }
       const data: { suggestions: GeminiDefinitionResponse[] } = await response.json(); // Worker returns { suggestions: [...] }
       return { success: true, data };
@@ -87,8 +99,14 @@ export const geminiService = {
         body: JSON.stringify({ text, voiceName }),
       });
       if (!response.ok) {
-        const errorBody = await response.json();
-        throw new Error(errorBody.error || `Failed to generate speech: ${response.status}`);
+        const contentType = response.headers.get('content-type');
+        let errorBody: any;
+        if (contentType && contentType.includes('application/json')) {
+          errorBody = await response.json();
+        } else {
+          errorBody = await response.text();
+        }
+        throw new Error(errorBody.error || errorBody || `Failed to generate speech: ${response.status}`);
       }
       const data: { data: string } = await response.json(); // Worker returns { data: base64Audio }
       return { success: true, data: data.data };

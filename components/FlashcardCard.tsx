@@ -100,8 +100,9 @@ const FlashcardCard: React.FC<FlashcardCardProps> = ({
               >
                 {isReadingAloud ? <LoadingSpinner /> : (
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                    <path fillRule="evenodd" d="V5.625c0-1.036.784-1.875 1.75-1.875h.375a.75.75 0 0 1 .75.75v3.15c0 .414.336.75.75.75H21a.75.75 0 0 1 .75.75v2.812a.75.75 0 0 1-.416.687L19.25 14.25h-.375a.75.75 0 0 1-.75-.75V11.25a.75.75 0 0 1-.75-.75h-7.5a.75.75 0 0 1-.75-.75V7.5a.75.75 0 0 1-.75-.75Z" clipRule="evenodd" />
-                    <path fillRule="evenodd" d="M3 15.625c0-1.036.784-1.875 1.75-1.875h.375a.75.75 0 0 1 .75.75v3.15c0 .414.336.75.75.75H21a.75.75 0 0 1 .75.75v2.812a.75.75 0 0 1-.416.687L19.25 22.5h-.375a.75.75 0 0 1-.75-.75V19.5a.75.75 0 0 1-.75-.75h-7.5a.75.75 0 0 1-.75-.75V15.75a.75.75 0 0 1-.75-.75Z" clipRule="evenodd" />
+                    <path fillRule="evenodd" d="M9.375 7.5a.75.75 0 0 0-1.5 0v3c0 .414.336.75.75.75h3a.75.75 0 0 0 0-1.5H9.375V7.5Z" clipRule="evenodd" />
+                    <path d="M7.5 4.5a3 3 0 0 0-3 3v9a3 3 0 0 0 3 3h9a3 3 0 0 0 3-3v-9a3 3 0 0 0-3-3h-9Z" />
+                    <path fillRule="evenodd" d="M12 2.25a.75.75 0 0 1 .75.75v18a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75Z" clipRule="evenodd" />
                   </svg>
                 )}
               </Button>
@@ -146,10 +147,10 @@ const FlashcardCard: React.FC<FlashcardCardProps> = ({
               >
                 {isReadingAloud ? <LoadingSpinner /> : (
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                    <path fillRule="evenodd" d="M11.5 7.5a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.5 9.75a.75.75 0 0 0 0 1.5h15a.75.75 0 0 0 0-1.5h-15Z" clipRule="evenodd" />
-                    <path fillRule="evenodd" d="M12.875 17.25a.75.75 0 0 0 0-1.5h-9.75a.75.75 0 0 0 0 1.5h9.75Z" clipRule="evenodd" />
+                    <path d="M13.5 4.5a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM8.25 9.75a.75.75 0 0 0 0 1.5h15a.75.75 0 0 0 0-1.5H8.25Z" />
+                    <path d="M5.25 14.25a.75.75 0 0 0 0 1.5h15a.75.75 0 0 0 0-1.5H5.25Z" />
+                    <path d="M3.75 18.75a.75.75 0 0 0 0 1.5h15a.75.75 0 0 0 0-1.5H3.75Z" />
                   </svg>
-
                 )}
               </Button>
             </div>
