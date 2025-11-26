@@ -1,0 +1,5 @@
+name = "tradingdashboard"
+compatibility_date = "2025-11-22"
+
+[pages]
+dir = "dist"
