@@ -1,0 +1,5 @@
+{
+  "name": "Flashcard AI",
+  "description": "A Progressive Web App for learning new words with AI-powered suggestions and definitions, powered by Gemini and Cloudflare.",
+  "requestFramePermissions": []
+}

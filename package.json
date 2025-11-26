@@ -1,0 +1,26 @@
+{
+  "name": "flashcard-ai",
+  "version": "1.0.0",
+  "description": "A Progressive Web App for learning new words with AI-powered suggestions and definitions, powered by Gemini and Cloudflare.",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "build-worker": "npx esbuild worker.ts --bundle --format=esm --platform=neutral --outfile=dist/worker.js"
+  },
+  "dependencies": {
+    "react": "link:./node_modules/react",
+    "react-dom": "link:./node_modules/react-dom",
+    "react-router-dom": "link:./node_modules/react-router-dom",
+    "@google/genai": "^1.30.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "vite": "^5.0.0",
+    "typescript": "^5.0.0",
+    "tailwindcss": "^3.0.0",
+    "esbuild": "^0.21.0"
+  },
+  "type": "module"
+}
