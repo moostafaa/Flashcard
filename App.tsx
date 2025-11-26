@@ -11,6 +11,7 @@ import LoadingSpinner from './components/LoadingSpinner';
 import WordSuggestionCard from './components/WordSuggestionCard';
 import Input from './components/Input';
 import { TTS_VOICES } from './constants'; // Import TTS_VOICES
+import { ENDPOINTS } from './constants'; // Import ENDPOINTS to log the URL
 
 const App: React.FC = () => {
   const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
@@ -63,6 +64,7 @@ const App: React.FC = () => {
   const fetchFlashcards = useCallback(async () => {
     setLoading(true);
     setError(null);
+    console.log("Attempting to fetch flashcards from:", ENDPOINTS.FLASHCARDS); // Added for debugging
     const response = await flashcardService.getFlashcards();
     if (response.success && response.data) {
       // Sort flashcards by due date, oldest first

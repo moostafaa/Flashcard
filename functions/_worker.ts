@@ -74,6 +74,7 @@ export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
     const path = url.pathname;
+    console.log("Worker fetch handler invoked for:", path); // Added for debugging
 
     // Handle preflight OPTIONS requests for CORS
     if (request.method === 'OPTIONS') {
@@ -89,7 +90,9 @@ export default {
 
     // --- Flashcard API Endpoints ---
     if (path.startsWith('/api/flashcards')) {
+      console.log("Entering Flashcards API handler for path:", path); // Added for debugging
       if (!env.FLASHCARDS_KV) {
+        console.error('ERROR: KV Namespace (FLASHCARDS_KV) not configured in worker environment.');
         return createErrorResponse('KV Namespace (FLASHCARDS_KV) not configured.', 500);
       }
 
@@ -105,6 +108,7 @@ export default {
           const flashcards = (await Promise.all(flashcardPromises)).filter(Boolean) as Flashcard[];
           return createJsonResponse(flashcards);
         } catch (e: any) {
+          console.error("Flashcard GET error:", e); // Added for debugging
           return createErrorResponse(`Failed to retrieve flashcards: ${e.message}`, 500);
         }
       } 
@@ -128,6 +132,7 @@ export default {
           await env.FLASHCARDS_KV.put(id, JSON.stringify(flashcard));
           return createJsonResponse(flashcard, 201);
         } catch (e: any) {
+          console.error("Flashcard POST error:", e); // Added for debugging
           return createErrorResponse(`Failed to add flashcard: ${e.message}`, 400);
         }
       } 
@@ -147,6 +152,7 @@ export default {
             await env.FLASHCARDS_KV.put(id, JSON.stringify(updatedData));
             return createJsonResponse(updatedData);
           } catch (e: any) {
+            console.error("Flashcard PUT error:", e); // Added for debugging
             return createErrorResponse(`Failed to update flashcard: ${e.message}`, 400);
           }
         } else if (request.method === 'DELETE') {
@@ -161,6 +167,7 @@ export default {
               }
             });
           } catch (e: any) {
+            console.error("Flashcard DELETE error:", e); // Added for debugging
             return createErrorResponse(`Failed to delete flashcard: ${e.message}`, 500);
           }
         }
@@ -170,7 +177,9 @@ export default {
 
     // --- Gemini API Endpoints ---
     if (path.startsWith('/api/gemini')) {
+      console.log("Entering Gemini API handler for path:", path); // Added for debugging
       if (!env.API_KEY) {
+        console.error('ERROR: Gemini API Key (API_KEY) not configured in worker environment variables.');
         return createErrorResponse('Gemini API Key is not configured in worker environment variables (API_KEY).', 500);
       }
       // Always initialize GoogleGenAI here to ensure the latest API key is used, if applicable for Veo.
@@ -260,9 +269,8 @@ export default {
       return createErrorResponse('Gemini API endpoint not found or method not allowed.', 404);
     }
 
-    // For any non-API requests, return a 404.
-    // In a real PWA deployment with Cloudflare Workers/Pages, static assets (index.html, index.tsx, etc.)
-    // would be served by the hosting environment, and the worker would primarily handle API routes.
-    return createErrorResponse('API endpoint not found or method not allowed.', 404);
+    // For any non-API requests (e.g., requests for static assets not served by Pages), return a plain 404.
+    // This worker only handles /api/* routes. Cloudflare Pages handles serving static files.
+    return new Response('Not Found', { status: 404 });
   },
 };
