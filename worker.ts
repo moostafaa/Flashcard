@@ -1,4 +1,3 @@
-/// <reference types="@cloudflare/workers-types" />
 
 // Workaround for missing @cloudflare/workers-types definitions
 // if the /// <reference> directive is not picked up by the environment.
